@@ -15,21 +15,6 @@ def js(filepath):
 
 @route('/home')
 def home():
-    return """
-    <html>
-      <head>
-        <link type="text/css" href="/css/wp.css" rel="stylesheet">
-        <script type="text/javascript" src="/js/wp-1.0.0.js"></script>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.js"></script>
-      </head>
-      <body>
-        <div id="status">
-          <textarea id="input-text" onkeyup="FindLength()"></textarea>
-          <span id="counter">0</span>
-          <button id="post" onclick="PostStatus()">POST</button>
-        </div>
-      </body>
-    </html> 
-    """
+    return static_file('home.html', root="html")
 
 run(host='10.0.0.30', port=8080)
