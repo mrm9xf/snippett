@@ -20,8 +20,11 @@ var timeout_map = [
 
 //functions
 function PostStatus(){
-    //get text from textarea
-    var text = $('#input-text').val();
+    //get text from the snippett
+    var text = $('#snippett-text').val();
+
+    //get the title of the snippett
+    var title = $('#snippett-title').val();
 
     //pull the the current list of statuses for the user
     var statuses = $('.status-list');
@@ -34,19 +37,34 @@ function PostStatus(){
     else {
 	//if no statuses have ever been posted before, generate one
 	if( statuses.length == 0 ){
-	    $(`<div class="status-list">
-                 <p class="post-text"></p>
-	         <div class="post-time">
-                   <span class="time"></span>
-                   <a class="like-post" onclick="LikePost(this)" href="#">Like Post</a>
-                   +<span class="likes">1</span>
-                   <a class="delete-post" onclick="DeletePost(this)" href="#">Delete Post</a>
-	         </div>
-	       </div>`).insertAfter($('#status'));
+	    //prep the status
+	    var snippett = `
+		<div class="status-list">
+		  <div class="post-title">
+		    ${title}
+	          </div>
+                  <p class="post-text"></p>
+	          <div class="post-time">
+                    <span class="time"></span>
+                    <a class="like-post" onclick="LikePost(this)" href="#">Like Post</a>
+                    +<span class="likes">0</span>
+                    <a class="delete-post" onclick="DeletePost(this)" href="#">Delete Post</a>
+	          </div>
+		</div>
+	    `;
+
+	    $(snippett).insertAfter($('#top-nav'));
 	} 
 	//if statues have been posted before, clone the last one
 	else {
+	    //insert another status at the top of the list
 	    $('.status-list:first').clone(true).insertBefore('.status-list:first');
+
+	    //reset the likes for the new post to 0
+	    $('.likes').eq(0).text("0");
+
+	    //set the title
+	    $('.post-title').eq(0).text(title);
 	}
     
 	//find the timeout associated to their post (length of time before next story)
@@ -66,11 +84,13 @@ function PostStatus(){
 	$('.status-list:first').find('.time').html(FormatDate());
 	
 	//reset the status text area
-	$('#input-text').val('');
+	$('#snippett-text').val('');
 	
 	//reset the counter
 	$('#counter').text('0');
 
+	//dropping the popup
+	$('#post-popup').remove();
     }
 }
 
@@ -133,8 +153,55 @@ function FormatDate(){
 //function to power the character counter
 function FindLength(){
     //1. grab the length of the current textbox
-    var l = $('#input-text').val().length;
+    var l = $('#snippett-text').val().length;
 
     //2. set the span "#counter" to length l
     $('#counter').text(l.toString());
+}
+
+//function for post popup
+function NewSnip(){
+    var popup = `
+	<div id="post-popup">
+	  <table id="post-snip">
+	    <tr>
+	      <div id="close-snip"  onclick="CloseSnip()">X</div>
+            </tr>
+	    <tr>
+	      <td colspan="2" class="snip-header">Tell us about your snip:</td>
+	    </tr>
+	    <tr>
+	      <td class="snip-header">
+	        Post Name / Anthology
+	        <select id="anthology">
+	          <option value=0>New post/anthology</option>
+	        </select>
+	        </td>
+	    </tr>
+	    <tr>
+	      <td class="snip-header">
+	        Snip Title: <input type="text" id="snippett-title" />
+              </td>
+            </tr>
+	    <tr>
+	      <td colspan=2>
+	        <textarea id="snippett-text" onkeyup="FindLength()"></textarea>
+	      </td>
+	    </tr>
+	    <tr>
+	      <td><span id="counter">0</span></td>
+	      <td><button id="post" onclick="PostStatus()">POST</button></td>
+	    </tr>
+	  </table>
+	</div>
+    `;
+
+    if( ! $('#post-popup').length ){
+	$('#top-nav').append(popup);
+    }
+}
+
+//function for closing the snip (clicking X in corner)
+function CloseSnip(){
+    $('#post-popup').remove();
 }
