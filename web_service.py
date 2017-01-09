@@ -17,4 +17,8 @@ def js(filepath):
 def home():
     return static_file('home.html', root="html")
 
+@route('/test')
+def test():
+    return 'Hello, World'
+
 run(host='10.0.0.30', port=8080)
