@@ -5,3 +5,6 @@
 # Log Files #
 #############
 *.log
+
+# PYC Files #
+*.pyc
