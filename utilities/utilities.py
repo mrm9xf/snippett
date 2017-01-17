@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import pyodbc
 
 QUERIES_DIR = '/home/mrm9xf/Documents/snippett/queries/'
@@ -66,3 +67,24 @@ def write_snip(snip_text, collection_id, connection):
     snip_id = execute_query(sql, connection)[0][0]
 
     return snip_id
+
+def get_snips(connection):
+    #read in the get_snips.sql query
+    sql = read_query('get_snips')
+
+    #execute the query
+    snips = []
+
+    #loop through results
+    for row in execute_query(sql, connection):
+        d = {
+            'snipTitle': row.collection_name,
+            'snipText': row.snip_text,
+            'snipTime': row.createdon
+        }
+
+        snips.append(d)
+
+    return json.dumps(snips)
+
+    

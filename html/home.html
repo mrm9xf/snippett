@@ -1,8 +1,24 @@
 <html>
   <head>
-    <link type="text/css" href="/css/wp.css" rel="stylesheet">
-    <script type="text/javascript" src="/js/wp-1.0.0.js"></script>
+    <link type="text/css" href="/css/snippett/wp.css" rel="stylesheet">
+    <script type="text/javascript" src="/js/snippett/wp-1.0.0.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.js"></script>
+    <script type="text/javascript">
+      $(window).ready(function(){
+        /*$.ajax({
+	  type: 'GET',
+	  url: 'http://10.0.0.30:8080/snippett/get_snips',
+	  dataType: 'json',
+	  success: function(data){
+	    alert(JSON.stringify(data));
+	  },
+	  error: function(jqHXR, textStatus, errorThrown){
+	    alert('error: ' + textStatus + ': ' + errorThrown);
+	  }
+        });*/
+        GetSnips();
+      });
+    </script>
   </head>
   <body>
     <!--<div id="post-popup">

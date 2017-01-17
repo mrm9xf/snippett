@@ -18,19 +18,42 @@ var timeout_map = [
     {'min': 200001, 'max': 999999999999999, 'timeout': 14}
 ];
 
+
+function build_snippett(snip_title, snip_text, snip_time){
+  var snippett = `
+  <div class="status-list">
+    <div class="post-title">
+      ${snip_title}
+    </div>
+    <p class="post-text">${snip_text}</p>
+    <div class="post-time">
+      <span class="time">${snip_time}</span>
+      <a class="like-post" onclick="LikePost(this)" href="#">Like Post</a>
+      +<span class="likes">0</span>
+      <a class="delete-post" onclick="DeletePost(this)" href="#">Delete Post</a>
+    </div>
+  </div>
+  `;
+
+    return snippett
+}
+
 //functions
 function PostStatus(){
     //get text from the snippett
-    var text = $('#snippett-text').val();
+    var snip_text = $('#snippett-text').val();
 
     //get the title of the snippett
-    var title = $('#snippett-title').val();
+    var snip_title = $('#snippett-title').val();
+
+    //get the createdon
+    var snip_time = FormatDate();
 
     //pull the the current list of statuses for the user
     var statuses = $('.status-list');
 
     //if the post text length is 0, throw error
-    if(text.length == 0){
+    if(snip_text.length == 0){
   	alert('Please ensure that your post contains');
     } 
     //post text length > 0
@@ -38,22 +61,9 @@ function PostStatus(){
 	//if no statuses have ever been posted before, generate one
 	if( statuses.length == 0 ){
 	    //prep the status
-	    var snippett = `
-		<div class="status-list">
-		  <div class="post-title">
-		    ${title}
-	          </div>
-                  <p class="post-text"></p>
-	          <div class="post-time">
-                    <span class="time"></span>
-                    <a class="like-post" onclick="LikePost(this)" href="#">Like Post</a>
-                    +<span class="likes">0</span>
-                    <a class="delete-post" onclick="DeletePost(this)" href="#">Delete Post</a>
-	          </div>
-		</div>
-	    `;
+	    var new_snippett = build_snippett(snip_title, snip_text, snip_time);
 
-	    $(snippett).insertAfter($('#top-nav'));
+	    $(new_snippett).insertAfter($('#top-nav'));
 	} 
 	//if statues have been posted before, clone the last one
 	else {
@@ -64,24 +74,26 @@ function PostStatus(){
 	    $('.likes').eq(0).text("0");
 
 	    //set the title
-	    $('.post-title').eq(0).text(title);
+	    $('.post-title').eq(0).text(snip_title);
+
+	    //add text from status update to newly created div
+	    $('.status-list:first').find('.post-text').html(snip_text);
+
+
+	    //add the span and hyperlink to time div
+	    $('.status-list:first').find('.time').html(snip_time);
+
 	}
     
 	//find the timeout associated to their post (length of time before next story)
 	var timeout = 10;
 	for ( var i = 0; i < timeout_map.length - 1; i++){
 	    //if the post length is inbetween the lengths within timeout_map, assign that as timeout
-    	    if (text.length >= timeout_map[i].min & text.length <= timeout_map[i].max){
+    	    if (snip_text.length >= timeout_map[i].min & snip_text.length <= timeout_map[i].max){
       		//alert(timeout_map[i].timeout.toString());
 		timeout = timeout_map[i].timeout;
 	    }
 	}
-	
-	//add text from status update to newly created div
-	$('.status-list:first').find('.post-text').html(text);
-	
-	//add the span and hyperlink to time div
-	$('.status-list:first').find('.time').html(FormatDate());
 	
 	//reset the status text area
 	$('#snippett-text').val('');
@@ -204,4 +216,31 @@ function NewSnip(){
 //function for closing the snip (clicking X in corner)
 function CloseSnip(){
     $('#post-popup').remove();
+}
+
+//function to get snips to display
+function GetSnips(){
+    $.ajax({
+	type: 'GET',
+	url: 'http://10.0.0.30:8080/snippett/get_snips',
+	dataType: 'json',
+	success: function(data){
+	    SnipList(data);
+	},
+	error: function(jqHXR, textStatus, errorThrown){
+	    alert('error: ' + textStatus + ': ' + errorThrown);
+	}
+    });
+}
+
+//function to fill in the status list
+function SnipList(data){
+    var l = Object.keys(data).length;
+    for(var i = 0; i < l; i++){
+	var snip_text = data[i]['snipText'];
+	var snip_title = data[i]['snipTitle'];
+	var snip_time = data[i]['snipTime'];
+	var new_snippett = build_snippett(snip_title, snip_text, snip_time);
+	$(new_snippett).insertAfter('#top-nav');
+    }
 }
