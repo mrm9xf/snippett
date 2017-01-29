@@ -57,11 +57,20 @@
 }
 
 .menu-text {
-    position:absolute;
-    top: 0;
     margin-top: 11;
     text-align: center;
     width: inherit;
+}
+
+.menu-snip {
+    float: left;
+    line-height: 0;
+}
+
+.menu-anthology {
+    float: right;
+    line-height: 0;
+    width: 170px;
 }
 
 #post-popup {
@@ -96,4 +105,25 @@
     height: 22px;
     width: 22px;
     text-align: center;
+}
+
+#new-collection {
+    /*margin: 20 0 0 20;*/
+    padding: 20 20 0 20;
+    width: inherit;
+}
+
+#post-anthology {
+  float: right;
+  border: 1px solid;
+  width: 50px;
+  height: 20px;
+  background-color: blue;
+  color: cyan;
+}
+
+#anthology-text {
+  height: 100px;
+  width: 100%;
+  resize: none;
 }

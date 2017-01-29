@@ -103,6 +103,7 @@ function PostStatus(){
 
 	//dropping the popup
 	$('#post-popup').remove();
+
     }
 }
 
@@ -216,6 +217,41 @@ function NewSnip(){
 //function for closing the snip (clicking X in corner)
 function CloseSnip(){
     $('#post-popup').remove();
+}
+
+//function for popup to create a new collection
+function NewAnthology(){
+    var popup = `
+        <div id="post-popup">
+	  <table id="new-collection">
+	      <tr>
+                <div id="close-snip" onclick="CloseSnip()">X</div>
+	      </tr>
+	      <tr>
+	        <td colspan="2" class="collection-header">Tell us about your collection:</td>
+	      </tr>
+	      <tr>
+	        <td class="collection-header">
+	          Anthology Name:&nbsp;
+                  <input type="text" id="anthology">
+	        </td>
+	      <tr>
+	        <td colspan=2>
+	          Anthology Description:<br>
+	          <textarea id="anthology-text" onkeyup="FindLength()"></textarea>
+	        </td>
+	      </tr>
+	      <tr>
+	        <td><span id="counter">0</span></td>
+	        <td><button id="post-anthology" onclick="PostAnthology()">POST</button></td>
+	      </tr>
+	    </table>
+	  </div> 
+  `;
+
+    if( ! $('#post-popup').length ){
+	$('#top-nav').append(popup);
+    }
 }
 
 //function to get snips to display
