@@ -187,7 +187,6 @@ function NewSnip(){
 	      <td class="snip-header">
 	        Post Name / Anthology
 	        <select id="anthology">
-	          <option value=0>New post/anthology</option>
 	        </select>
 	        </td>
 	    </tr>
@@ -211,6 +210,7 @@ function NewSnip(){
 
     if( ! $('#post-popup').length ){
 	$('#top-nav').append(popup);
+	GetCollections();
     }
 }
 
@@ -269,6 +269,22 @@ function GetSnips(){
     });
 }
 
+//function to get collections for dropdown
+//in snip creation popup
+function GetCollections(){
+    $.ajax({
+	type: 'GET',
+	url: 'http://10.0.0.30:8080/snippett/get_collections',
+	dataType: 'json',
+	success: function(data){
+	    CollectionList(data);
+	},
+	error: function(jqHXR, textStatus, errorThrown){
+	    alert('error: ' + textStatus + ': ' + errorThrown);
+	}
+    });
+}
+
 //function to fill in the status list
 function SnipList(data){
     var l = Object.keys(data).length;
@@ -279,4 +295,16 @@ function SnipList(data){
 	var new_snippett = build_snippett(snip_title, snip_text, snip_time);
 	$(new_snippett).insertAfter('#top-nav');
     }
+}
+
+//function to fill in the collection list
+function CollectionList(data){
+    var l = Object.keys(data).length;
+    var opts = '<option value=0>New post/anthology</option>';
+    for(var i = 0; i < l; i++){
+	var collection_id = data[i]['collectionId'];
+	var collection_name = data[i]['collectionName'];
+	opts += '<option value=' + collection_id + '>' + collection_name + '</option>';
+    }
+    $('#anthology').html(opts);
 }

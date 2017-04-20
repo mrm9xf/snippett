@@ -88,3 +88,20 @@ def get_snips(connection):
     return json.dumps(snips)
 
     
+def get_collections(connection):
+    #read in the get_collections.sql query
+    sql = read_query('get_collections')
+
+    #execute teh query
+    collections = []
+
+    #loop through results
+    for row in execute_query(sql, connection):
+        d = {
+            'collectionId': row.collection_id,
+            'collectionName': row.collection_name
+        }
+
+        collections.append(d)
+
+    return json.dumps(collections)
